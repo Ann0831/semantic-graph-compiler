@@ -73,7 +73,7 @@ ${neighborTxt}
 現在要寫的元件的描述：
 ${node.description || '[無描述]'}
 
-請根據以上資訊生成此元件的功能程式碼(javascript)。就只生成這個元件喔，不要幫忙做export甚麼的，或是自己引入其他全域變數。這個軟體系統的預設背景是node.js、express、mysql`.trim()+"\n\n[END]";
+請根據以上資訊生成此元件的功能程式碼(javascript)。就只生成這個元件喔，不要幫忙做export甚麼的，或是自己引入其他全域變數。這個軟體系統的預設背景是node.js、express、mysql`.trim()+"\n\n<END>";
 }
 
 /** Split graph by filename|placeType so we only topologically sort intra‑file */
@@ -106,6 +106,60 @@ function reverseTopo(nodes, edges) {
   if(res.length!==nodes.length) throw new Error('Cycle detected in subgraph');
   return res;
 }
+function detectIllegalEdge(graph) {
+  const errors = [];
+
+  const ids = new Set();
+  const dup = new Set();
+  for (const node of graph.nodes) {
+    if (!node.filename) errors.push(`❌ Node "${node.name}" has empty filename.`);
+    if (ids.has(node.id)) dup.add(node.id);
+    ids.add(node.id);
+  }
+  for (const id of dup) errors.push(`❌ Duplicate node id: ${id}`);
+
+  for (const edge of graph.edges) {
+    const from = edge.from.id, to = edge.to.id;
+    if (!ids.has(from)) errors.push(`❌ Edge from "${from}" not in node list.`);
+    if (!ids.has(to)) errors.push(`❌ Edge to "${to}" not in node list.`);
+  }
+
+  if (errors.length > 0) {
+    console.error('🚨 Graph validation failed:\n' + errors.map(e => ' - ' + e).join('\n'));
+    throw new Error('Graph is invalid. Please fix the above issues.');
+  }
+}
+
+function detectCycle(fullGraph) {
+  const graph = {};
+  fullGraph.nodes.forEach(n => { graph[n.id] = []; });
+  fullGraph.edges.forEach(e => {
+    graph[e.from.id].push(e.to.id);
+  });
+
+  const visited = new Set();
+  const inStack = new Set();
+
+  function dfs(nodeId) {
+    if (inStack.has(nodeId)) return true;  // found a cycle
+    if (visited.has(nodeId)) return false;
+
+    visited.add(nodeId);
+    inStack.add(nodeId);
+
+    for (const neighbor of graph[nodeId]) {
+      if (dfs(neighbor)) return true;
+    }
+
+    inStack.delete(nodeId);
+    return false;
+  }
+
+  for (const node of fullGraph.nodes) {
+    if (dfs(node.id)) return true;
+  }
+  return false;
+}
 
 /**
  * Compile the graph file into individual prompt text files.
@@ -115,7 +169,12 @@ function reverseTopo(nodes, edges) {
 function compile(graphPath = 'graph.json', outDir = 'prompt-txt') {
   const raw = fs.readFileSync(graphPath, 'utf8');
   const fullGraph = JSON.parse(raw);
-
+  //console.log(fullGraph);
+  
+  if (detectCycle(fullGraph)) {
+        throw new Error('❌ Compile Error: Graph contains a cycle!');
+  }
+  detectIllegalEdge(fullGraph);
   // Ensure output dir exists
   fs.mkdirSync(outDir, { recursive: true });
   // Clear previous txt files
@@ -126,9 +185,15 @@ function compile(graphPath = 'graph.json', outDir = 'prompt-txt') {
   const subGraphs = splitByFileContext(fullGraph);
 
   let promptnumber = 0;
-  let filenumber=0
+  let filenumber=0;
+  for (const sg of subGraphs) {
+    if((sg.nodes[0].filename).length===0){
+        throw new Error('❌ Compile Error: There is a object with empty filename!');
+    }
+  }
   for (const sg of subGraphs) {
     const sorted = reverseTopo(sg.nodes, sg.edges);
+
     const sanitizeFilename = filename =>filename.replace(/\//g, '__').replace(/\./g, 'DOT');
     filenumber++;
     const sgfileName = `${sanitizeFilename(sorted[0].filename)}.txt`;
