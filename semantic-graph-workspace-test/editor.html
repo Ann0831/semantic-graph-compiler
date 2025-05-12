@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>三區段元件圖生成器</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; }
+    .zone { border: 2px solid #aaa; padding: 10px; width: 45%; min-width: 300px; }
+    .node-box { border: 1px solid #ccc; margin-top: 10px; padding: 8px; position: relative; }
+    .node-box label { display: block; margin-bottom: 4px; }
+    /* -------- Edge UI -------- */
+    .edge-input   { margin-top: 6px; padding-left: 10px; font-size: 12px; }
+    .edge-row     { margin-left: 18px; margin-top: 3px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .edge-row input { width: 90px; }
+    .edge-row select { font-size: 12px; }
+    .edge-input button { font-size: 12px; padding: 0 4px; margin-left: 4px; }
+    /* ------------------------- */
+    .node-box button { margin-top: 4px; margin-right: 5px; font-size: 12px; }
+    textarea { width: 100%; height: 300px; margin-top: 20px; font-size: 12px; }
+    .node-description { width: 100%; height: 60px; resize: vertical; font-size: 12px; }
+    .controls { width: 100%; margin-top: 20px; }
+    
+  </style>
+</head>
+<body>
+
+<!-- ========================= ZONES ========================= -->
+
+<div class="zone" id="server-zone">
+  <h2>Server</h2>
+  <button onclick="addServerNode()">新增元件</button>
+  <div class="node-container" id="server"></div>
+</div>
+<div class="zone" id="mysql-zone">
+  <h2>MySQL</h2>
+  <button onclick="addMysqlNode()">新增元件</button>
+  <div class="node-container" id="mysql"></div>
+</div>
+
+<!-- ========================= CONTROLS ========================= -->
+<div class="controls">
+  <button onclick="generateJSON()">📤 輸出圖結構</button>
+  <button onclick="generateAndDownloadJSON()">💾 下載 JSON</button>
+  <input type="file" accept=".json" onchange="loadFromFile(event)" />
+  <textarea id="output" placeholder="輸出 JSON" readonly></textarea>
+</div>
+
+<script>
+  /* ------------------------------------------------------------------
+     基本資料
+  ------------------------------------------------------------------ */
+  let nodeCounter = 0;
+
+  const typeOptionsByZone = {
+    frontend: ["Function", "HTMLElement", "GlobalVariable"],
+    server:   ["Function", "EndpointHandler", "APIEndpoint[GET]","APIEndpoint[POST]","APIEndpoint[USE]", "server_file", "GlobalVariable"],
+    mysql:    ["Table", "GlobalVariable"]
+  };
+
+  const zoneEdgeTypes = {
+    frontend: ["calls", "own","reads_globalVar", "writes_globalVar", "create_html", "delete_html","imported","export"],
+    server:   ["calls","own", "write_server_file", "read_server_file", "reads_globalVar", "writes_globalVar", "reads_table", "writes_table", "handled_by", "rate_limited_by","imported"],
+    mysql:    [] // MySQL tables 通常不主動發出邊
+  };
+
+  const edgeTypeOptionsHTML = (zone, selected = "") =>
+    (zoneEdgeTypes[zone] || []).map(t => `<option${t === selected ? " selected" : ""}>${t}</option>`).join("");
+
+  /* ------------------------------------------------------------------
+     Helper: 生成唯一 id
+  ------------------------------------------------------------------ */
+  function buildId({ name, type, placeType, filename }) {
+    return Object.entries({ name, type, placeType, filename })
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v}`)
+      .join("|");
+  }
+
+  /* ------------------------------------------------------------------
+     新增節點快捷
+  ------------------------------------------------------------------ */
+  const zoneFns = {
+    frontend: () => addNode("frontend"),
+    server:   () => addNode("server"),
+    mysql:    () => addNode("mysql")
+  };
+  function addFrontendNode(preset = {}) { addNode("frontend", preset); }
+  function addServerNode(preset = {})   { addNode("server",   preset); }
+  function addMysqlNode(preset = {})    { addNode("mysql",    preset); }
+
+  /* ------------------------------------------------------------------
+     建立節點 UI
+  ------------------------------------------------------------------ */
+  function addNode(zone, preset = {}) {
+    const container = document.getElementById(zone);
+    const nodeDiv   = document.createElement("div");
+    nodeDiv.className = "node-box";
+    nodeDiv.dataset.index = nodeCounter++;
+    nodeDiv.dataset.zone  = zone;
+
+    const { name = "", type = "Function", filename = "", description = "" } = preset;
+
+    const typeHTML = (typeOptionsByZone[zone] || []).map(opt => `<option${opt === type ? " selected" : ""}>${opt}</option>`).join("");
+
+    nodeDiv.innerHTML = `
+      <label>Name: <input type="text" class="node-name" value="${name}" /></label>
+      <label>Type: <select class="node-type">${typeHTML}</select></label>
+      <label>File: <input type="text" class="node-filename" value="${filename}" /></label>
+      <label>Description:</label>
+      <textarea class="node-description">${description}</textarea>
+      <div class="edges"></div>
+      <button onclick="appendEdge(this,'${zone}')">➕ 邊</button>
+      <button onclick="zoneFns['${zone}']()">➕ 新增同區元件</button>
+      <button onclick="this.parentElement.remove()">🗑 刪除元件</button>`;
+
+    container.appendChild(nodeDiv);
+  }
+
+  /* ------------------------------------------------------------------
+     Edge UI Template
+  ------------------------------------------------------------------ */
+  function edgeHTML(name = "", type = "", placeType = "", filename = "", edgeType = "calls", zone) {
+    const typeSelectHTML = (typeOptionsByZone[placeType] || []).map(t => `<option${t === type ? " selected" : ""}>${t}</option>`).join("");
+    return `
+      ➤ to:
+      <div class="edge-row">
+        <input class="edge-to-name" placeholder="name" value="${name}" />
+        <input class="edge-to-filename" placeholder="filename" value="${filename}" />
+        <select class="edge-to-placeType">
+          <option${placeType === "none"   ? " selected" : ""}>choose target place</option>
+          <option${placeType === "server"   ? " selected" : ""}>server</option>
+          <option${placeType === "mysql"    ? " selected" : ""}>mysql</option>
+        </select>
+        <select class="edge-to-type">${typeSelectHTML}</select>
+      </div>
+      <div class="edge-row">
+        edgetype:
+        <select class="edge-type">${edgeTypeOptionsHTML(zone, edgeType)}</select>
+        <button onclick="this.closest('.edge-input').remove()">❌</button>
+      </div>`;
+  }
+
+  function appendEdge(btn, zone) {
+    const container = btn.parentElement.querySelector(".edges");
+    const div = document.createElement("div");
+    div.className = "edge-input";
+    div.innerHTML = edgeHTML("", "", "", "", "calls", zone);
+    syncPlaceTypeWithTypeSelect(div);
+    container.appendChild(div);
+  }
+
+  // 當 placeType 改變時即時刷新 type 選單
+  function syncPlaceTypeWithTypeSelect(edgeDiv) {
+    const selPlace = edgeDiv.querySelector(".edge-to-placeType");
+    const selType  = edgeDiv.querySelector(".edge-to-type");
+    selPlace.addEventListener("change", () => {
+      const opts = typeOptionsByZone[selPlace.value] || [];
+      selType.innerHTML = opts.map(t => `<option>${t}</option>`).join("");
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     產生 JSON (from / to 對稱)
+  ------------------------------------------------------------------ */
+  function collectNodes() {
+    const nodes = [], set = new Set();
+    document.querySelectorAll(".node-box").forEach(box => {
+      const obj = {
+        name:        box.querySelector(".node-name").value.trim(),
+        type:        box.querySelector(".node-type").value,
+        placeType:   box.dataset.zone,
+        filename:    box.querySelector(".node-filename").value.trim(),
+        description: box.querySelector(".node-description").value.trim(),
+      };
+      obj.id = buildId(obj);
+      nodes.push(obj);
+      set.add(obj.id);
+    });
+    return { nodes, set };
+  }
+
+  function generateJSON() {
+    const { nodes, set } = collectNodes();
+    const edges = [];
+    const skipWarnings = confirm("如果偵測到某些邊指向不存在的節點。是否要忽略所有這類警告？（按確定表示忽略）");
+    document.querySelectorAll(".node-box").forEach(box => {
+      const fromObj = {
+        name:      box.querySelector(".node-name").value.trim(),
+        type:      box.querySelector(".node-type").value,
+        placeType: box.dataset.zone,
+        filename:  box.querySelector(".node-filename").value.trim(),
+      };
+      fromObj.id = buildId(fromObj);
+      
+      box.querySelectorAll(".edge-input").forEach(row => {
+        const toObj = {
+          name:      row.querySelector(".edge-to-name").value.trim(),
+          type:      row.querySelector(".edge-to-type").value.trim(),
+          placeType: row.querySelector(".edge-to-placeType").value.trim(),
+          filename:  row.querySelector(".edge-to-filename").value.trim(),
+        };
+        if (!toObj.name || !toObj.type || !toObj.placeType) return; // incomplete
+        toObj.id = buildId(toObj);
+        const edgeType = row.querySelector(".edge-type").value;
+        if ((!set.has(toObj.id))&&(!skipWarnings)) alert(`❌ 邊 from "${fromObj.id}" → "${toObj.id}" 指向不存在的節點！`);
+        edges.push({ from: fromObj, to: toObj, type: edgeType });
+      });
+    });
+
+    document.getElementById("output").value = JSON.stringify({ nodes, edges }, null, 2);
+  }
+
+  function generateAndDownloadJSON() {
+    generateJSON();
+    const blob = new Blob([document.getElementById("output").value], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url; a.download = "graph.json"; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /* ------------------------------------------------------------------
+     載入 JSON
+  ------------------------------------------------------------------ */
+  function loadFromFile(ev) {
+    const file = ev.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = e => { try { loadGraph(JSON.parse(e.target.result)); } catch { alert("讀取失敗，請確認檔案格式正確！"); } };
+    r.readAsText(file);
+  }
+
+  function clearAllZones() {
+    ["server", "mysql"].forEach(id => {
+      document.getElementById(id).innerHTML = "";
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     載入整個圖 (nodes ➜ UI, edges ➜ UI)
+  ------------------------------------------------------------------ */
+  function loadGraph(graph) {
+    clearAllZones();
+
+    // 1. 先還原節點
+    (graph.nodes || []).forEach(n => {
+      //console.log("add node: ",n);
+      addNode(n.placeType || "server", n);
+      //console.log("add node success: ",n);
+    });
+
+    // 2. 再還原邊（必須在節點都存在後）
+    (graph.edges || []).forEach(e => restoreEdge(e));
+
+    // 3. 重跑一次 JSON 以同步 textarea
+    generateJSON();
+  }
+
+  /* ------------------------------------------------------------------
+     輔助：透過 id 找對應的 node-box DIV
+  ------------------------------------------------------------------ */
+  function findNodeDivById(id) {
+    return Array.from(document.querySelectorAll(".node-box")).find(box => {
+      return buildId({
+        name:      box.querySelector(".node-name").value.trim(),
+        type:      box.querySelector(".node-type").value,
+        placeType: box.dataset.zone,
+        filename:  box.querySelector(".node-filename").value.trim(),
+      }) === id;
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     還原單條 Edge UI
+  ------------------------------------------------------------------ */
+  function restoreEdge(edge) {
+    const fromDiv = findNodeDivById(edge.from.id || edge.from);
+    if (!fromDiv) return;
+
+    const to = edge.to || {};
+    const edgesDiv = fromDiv.querySelector(".edges");
+    const row = document.createElement("div");
+    row.className = "edge-input";
+
+    row.innerHTML = edgeHTML(
+      to.name || "",
+      to.type || "",
+      to.placeType || "",
+      to.filename || "",
+      edge.type,
+      fromDiv.dataset.zone
+    );
+
+    syncPlaceTypeWithTypeSelect(row);
+    edgesDiv.appendChild(row);
+  }
+</script>
+</body>
+</html>
