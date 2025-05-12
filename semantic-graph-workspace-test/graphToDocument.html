@@ -1,156 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Semantic Graph Prompt Viewer</title>
+  <meta charset="UTF-8" />
+  <title>元件圖轉文字敘述</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
+    body { font-family: sans-serif; padding: 20px; }
+    #output-container {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+      background: #f9f9f9;
     }
-    select, textarea {
-      width: 100%;
-      margin-top: 10px;
-    }
-    textarea {
-      height: 500px;
-      white-space: pre;
-      font-family: monospace;
-    }
+    strong { font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>語意圖元件 Prompt 產生器</h1>
-  <input type="file" id="uploadJson" accept=".json" />
-  <label for="nodeSelect">選擇元件：</label>
-  <select id="nodeSelect"></select>
-  <textarea id="promptOutput" readonly></textarea>
+  <h2>上傳元件圖 JSON 檔</h2>
+  <input type="file" accept=".json" onchange="handleFile(event)" />
+  <div id="output-container"><em>轉換結果將顯示在此處...</em></div>
+  <br />
+  <button onclick="downloadText()">📥 下載 TXT</button>
 
   <script>
-    let nodeMap = new Map();
-    let edgeMap = new Map();
-    let graph = { nodes: [], edges: [] };
-
-    const select = document.getElementById('nodeSelect');
-    const output = document.getElementById('promptOutput');
-    const fileInput = document.getElementById('uploadJson');
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
+    let rawText = "";
+    
+    // 將 id 字串轉回物件（用於 fallback）
+    function parseIdString(idStr = "") {
+      const obj = {};
+      idStr.split("|").forEach((pair) => {
+        const [k, ...rest] = pair.split(":");
+        if (k && rest.length) obj[k] = rest.join(":");
+      });
+      return obj;
+    }
+    
+    // 處理上傳
+    function handleFile(event) {
+      const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = (e) => {
         try {
-          graph = JSON.parse(event.target.result);
-          loadGraph();
+          const graph = JSON.parse(e.target.result);
+          rawText = convertGraphToText(graph, false);
+          const html = convertGraphToText(graph, true);
+          document.getElementById("output-container").innerHTML = html;
         } catch (err) {
-          alert('JSON 解析錯誤');
+          alert("❌ JSON 格式錯誤，請檢查檔案內容！");
         }
       };
       reader.readAsText(file);
+    }
+    
+    // 統一格式化輸出
+    function formatDetailedLabel(node = {}) {
+      return (
+        `[name]: ${node.name || "未知"}  ` +
+        `[filename]: ${node.filename || "未知"}  ` +
+        `[type]: ${node.type || "未知"}  ` +
+        `[placeType]: ${node.placeType || "未知"}`
+      );
+    }
+    
+    function convertGraphToText(graph, generateHTML = false) {
+  const groups = { frontend: {}, server: {}, mysql: {} };
+  const idMap = {};
+  const edgeMap = {};
+  const reverseEdgeMap = {};
+
+  // 建立 ID → 節點 映射
+  graph.nodes.forEach((n) => (idMap[n.id] = n));
+
+  // 處理邊
+  graph.edges.forEach((edge) => {
+    const fromNode = typeof edge.from === "object" ? edge.from : parseIdString(edge.from);
+    const toNode   = typeof edge.to === "object"   ? edge.to   : parseIdString(edge.to);
+    const fromId   = fromNode.id || edge.from;
+    const toId     = toNode.id   || edge.to || "unknown";
+
+    if (!edgeMap[fromId]) edgeMap[fromId] = [];
+    if (!reverseEdgeMap[toId]) reverseEdgeMap[toId] = [];
+
+    const toLabel = formatDetailedLabel(toNode);
+    const fromLabel = formatDetailedLabel(fromNode);
+
+    edgeMap[fromId].push(`➤ (${edge.type}) → ${toLabel}`);
+    reverseEdgeMap[toId].push(`← (${edge.type}) ${fromLabel}`);
+  });
+
+  // 分組節點
+  graph.nodes.forEach((node) => {
+    const zone = node.placeType || "server";
+    const file = node.filename || "(無檔名)";
+    if (!groups[zone][file]) groups[zone][file] = [];
+    groups[zone][file].push({
+      name: node.name,
+      type: node.type,
+      description: node.description || "",
+      edges: edgeMap[node.id] || [],
+      reverseEdges: reverseEdgeMap[node.id] || [],
     });
-function formatMultilineDescription(text, indent) {
-  const lines = text.split('\n');
-  const indentString = ' '.repeat(indent);
-  return lines.map((line, index) =>
-    indentString + line
-  ).join('\n');
+  });
+
+  // 輸出格式化文字或 HTML
+  function line(label, value) {
+    if (generateHTML) {
+      const htmlVal = value.replace(/\n/g, "<br>");
+      return `<div><strong>${label}：</strong>${htmlVal}</div>`;
+    }
+    return `${label}：${value}`;
+  }
+
+  let out = "";
+  for (const zone of ["frontend", "server", "mysql"]) {
+    out += generateHTML
+      ? `<strong>🔷【${zone.toUpperCase()} 區域】</strong>\n`
+      : `🔷【${zone.toUpperCase()} 區域】\n`;
+
+    for (const file in groups[zone]) {
+      out += (generateHTML ? "<hr />" : "------") + "\n";  // 🔸 橫線在檔名上面
+      out += line("📄 檔案", file) + "\n";
+
+      groups[zone][file].forEach((n) => {
+        out += "\n" + line("🧩 元件名稱", n.name) + "\n"; // 🔸 改為 name
+        out += line("類型", n.type) + "\n";
+        out += line("說明", n.description) + "\n";
+
+        if (n.edges.length) {
+          out += line("🔗 連出去", "") + "\n  " + n.edges.join("\n  ") + "\n";
+        } else {
+          out += line("🔗 連出去", "無") + "\n";
+        }
+
+        if (n.reverseEdges.length) {
+          out += line("🔙 被連入", "") + "\n  " + n.reverseEdges.join("\n  ") + "\n";
+        } else {
+          out += line("🔙 被連入", "無") + "\n";
+        }
+      });
+    }
+
+    out += "\n" + (generateHTML ? `<hr />` : "-".repeat(40) + "\n");
+  }
+
+  return out.trim();
 }
 
-    function loadGraph() {
-      nodeMap = new Map();
-      edgeMap = new Map();
-      select.innerHTML = '';
-
-      graph.nodes.forEach(n => {
-        nodeMap.set(n.id, n);
-      });
-
-      graph.nodes.forEach(n => edgeMap.set(n.id, []));
-
-      graph.edges.forEach(edge => {
-        if (!edgeMap.has(edge.from.id)) edgeMap.set(edge.from.id, []);
-        edgeMap.get(edge.from.id).push({ to: edge.to.id, type: edge.type });
-      });
-
-      graph.nodes.forEach(node => {
-        const option = document.createElement('option');
-        option.value = node.id;
-        option.textContent = `${node.name} (${node.type})`;
-        select.appendChild(option);
-      });
-
-      if (graph.nodes.length > 0) {
-        select.selectedIndex = 0;
-        updatePrompt(select.value);
-      }
+    
+    // 下載 TXT 功能
+    function downloadText() {
+      const blob = new Blob([rawText], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "graph_description.txt";
+      a.click();
+      URL.revokeObjectURL(url);
     }
-
-    select.addEventListener('change', () => {
-      updatePrompt(select.value);
-    });
-
-    function generateRecursiveText(startId, currentId, visited = new Set(), indent = 0, maxDistance = 1, currentDistance = 0,specialedgetype="") {
-      if (!nodeMap.has(currentId) || visited.has(currentId) || currentDistance > maxDistance) return '';
-      
-
-      visited.add(currentId);
-      const node = nodeMap.get(currentId);
-      let result = `${'  '.repeat(indent)}- ${node.name} (${node.type}) in ${node.filename}\n`;
-      if(indent>1){
-        if(specialedgetype==="imported"){
-            result = `${'  '.repeat(indent)}- import from ${node.name} (${node.type}) in ${node.filename}\n`;
-        }else if(specialedgetype==="own"){
-            result = `${'  '.repeat(indent)}- own ${node.name} (${node.type}) in ${node.filename}\n`;
-        }else{
-
-        }
-
-      }
-
-      const processeDescription=formatMultilineDescription(node.description,indent+8);
-
-      result += `${'  '.repeat(indent + 1)}描述：\n${processeDescription || '[無描述]'}\n`;
-      if (currentId === startId){
-
-        result='';
-      }
-
-      const edges = edgeMap.get(currentId) || [];
-      for (const edge of edges) {
-        const cost = ((edge.type === 'imported')||(edge.type === 'own')) ? 0 : 1;
-        specialedgetype=edge.type;
-        const newDist = currentDistance + cost;
-        if (newDist <= maxDistance) {
-          result += generateRecursiveText(startId, edge.to, new Set(visited), indent + 1, maxDistance, newDist,specialedgetype);
-        }
-      }
-
-      return result;
-    }
-
-    function updatePrompt(nodeId) {
-      const node = nodeMap.get(nodeId);
-      if (!node) return;
-
-      const neighborText = generateRecursiveText(node.id, node.id);
-
-      const prompt = `
-元件名稱：${node.name}
-類型：${node.type}
-檔案：${node.filename}
-你唯一可以使用的外部物件(包含函式)在這裡的第一層，更深的層的元件及其描述只是說明用(說明import自哪裡或是擁有甚麼)，不能用。注意喔，不要使用這邊以外的全域變數或是存取其他物件(ex.table)：
-${neighborText}
-
-現在要寫的元件的描述：
-${node.description || '[無描述]'}
-
-請根據以上資訊生成此元件的功能程式碼。就只生成這個元件喔，不要幫忙做export甚麼的，或是自己引入其他全域變數
-`.trim();
-
-      output.value = prompt;
-    }
-  </script>
+    </script>
+    
 </body>
 </html>
+
+
+
+
