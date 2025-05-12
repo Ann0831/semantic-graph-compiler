@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Semantic Graph Prompt Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    select, textarea {
+      width: 100%;
+      margin-top: 10px;
+    }
+    textarea {
+      height: 500px;
+      white-space: pre;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>語意圖元件 Prompt 產生器</h1>
+  <input type="file" id="uploadJson" accept=".json" />
+  <label for="nodeSelect">選擇元件：</label>
+  <select id="nodeSelect"></select>
+  <textarea id="promptOutput" readonly></textarea>
+
+  <script>
+    let nodeMap = new Map();
+    let edgeMap = new Map();
+    let graph = { nodes: [], edges: [] };
+
+    const select = document.getElementById('nodeSelect');
+    const output = document.getElementById('promptOutput');
+    const fileInput = document.getElementById('uploadJson');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          graph = JSON.parse(event.target.result);
+          loadGraph();
+        } catch (err) {
+          alert('JSON 解析錯誤');
+        }
+      };
+      reader.readAsText(file);
+    });
+function formatMultilineDescription(text, indent) {
+  const lines = text.split('\n');
+  const indentString = ' '.repeat(indent);
+  return lines.map((line, index) =>
+    indentString + line
+  ).join('\n');
+}
+
+    function loadGraph() {
+      nodeMap = new Map();
+      edgeMap = new Map();
+      select.innerHTML = '';
+
+      graph.nodes.forEach(n => {
+        nodeMap.set(n.id, n);
+      });
+
+      graph.nodes.forEach(n => edgeMap.set(n.id, []));
+
+      graph.edges.forEach(edge => {
+        if (!edgeMap.has(edge.from.id)) edgeMap.set(edge.from.id, []);
+        edgeMap.get(edge.from.id).push({ to: edge.to.id, type: edge.type });
+      });
+
+      graph.nodes.forEach(node => {
+        const option = document.createElement('option');
+        option.value = node.id;
+        option.textContent = `${node.name} (${node.type})`;
+        select.appendChild(option);
+      });
+
+      if (graph.nodes.length > 0) {
+        select.selectedIndex = 0;
+        updatePrompt(select.value);
+      }
+    }
+
+    select.addEventListener('change', () => {
+      updatePrompt(select.value);
+    });
+
+    function generateRecursiveText(startId, currentId, visited = new Set(), indent = 0, maxDistance = 1, currentDistance = 0,specialedgetype="") {
+      if (!nodeMap.has(currentId) || visited.has(currentId) || currentDistance > maxDistance) return '';
+      
+
+      visited.add(currentId);
+      const node = nodeMap.get(currentId);
+      let result = `${'  '.repeat(indent)}- ${node.name} (${node.type}) in ${node.filename}\n`;
+      if(indent>1){
+        if(specialedgetype==="imported"){
+            result = `${'  '.repeat(indent)}- import from ${node.name} (${node.type}) in ${node.filename}\n`;
+        }else if(specialedgetype==="own"){
+            result = `${'  '.repeat(indent)}- own ${node.name} (${node.type}) in ${node.filename}\n`;
+        }else{
+
+        }
+
+      }
+
+      const processeDescription=formatMultilineDescription(node.description,indent+8);
+
+      result += `${'  '.repeat(indent + 1)}描述：\n${processeDescription || '[無描述]'}\n`;
+      if (currentId === startId){
+
+        result='';
+      }
+
+      const edges = edgeMap.get(currentId) || [];
+      for (const edge of edges) {
+        const cost = ((edge.type === 'imported')||(edge.type === 'own')) ? 0 : 1;
+        specialedgetype=edge.type;
+        const newDist = currentDistance + cost;
+        if (newDist <= maxDistance) {
+          result += generateRecursiveText(startId, edge.to, new Set(visited), indent + 1, maxDistance, newDist,specialedgetype);
+        }
+      }
+
+      return result;
+    }
+
+    function updatePrompt(nodeId) {
+      const node = nodeMap.get(nodeId);
+      if (!node) return;
+
+      const neighborText = generateRecursiveText(node.id, node.id);
+
+      const prompt = `
+元件名稱：${node.name}
+類型：${node.type}
+檔案：${node.filename}
+你唯一可以使用的外部物件(包含函式)在這裡的第一層，更深的層的元件及其描述只是說明用(說明import自哪裡或是擁有甚麼)，不能用。注意喔，不要使用這邊以外的全域變數或是存取其他物件(ex.table)：
+${neighborText}
+
+現在要寫的元件的描述：
+${node.description || '[無描述]'}
+
+請根據以上資訊生成此元件的功能程式碼。就只生成這個元件喔，不要幫忙做export甚麼的，或是自己引入其他全域變數
+`.trim();
+
+      output.value = prompt;
+    }
+  </script>
+</body>
+</html>
