@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <h1>Prompt-Viewer: Upload your .json graphfile to see promt of each component</h1>
+  <h1>語意圖元件 Prompt 產生器</h1>
   <input type="file" id="uploadJson" accept=".json" />
   <label for="nodeSelect">選擇元件：</label>
   <select id="nodeSelect"></select>
@@ -73,11 +73,13 @@ function formatMultilineDescription(text, indent) {
         if (!edgeMap.has(edge.from.id)) edgeMap.set(edge.from.id, []);
         edgeMap.get(edge.from.id).push({ to: edge.to.id, type: edge.type });
       });
+      graph.nodes.sort((a, b) => a.name.localeCompare(b.name));
 
       graph.nodes.forEach(node => {
         const option = document.createElement('option');
         option.value = node.id;
-        option.textContent = `${node.name} (${node.type})`;
+        option.innerHTML = `${node.name} (${node.type})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;filename:&nbsp ${node.filename}&nbsp;)`;
+
         select.appendChild(option);
       });
 
