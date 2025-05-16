@@ -1,0 +1,3132 @@
+{
+  "nodes": [
+    {
+      "name": "mysql",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "這是個import來的物件",
+      "id": "filename:./application/sqldatacenter.js|name:mysql|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "sqlpassword",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "這是個import來的物件",
+      "id": "filename:./application/sqldatacenter.js|name:sqlpassword|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "sqlusername",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "這是個import來的物件",
+      "id": "filename:./application/sqldatacenter.js|name:sqlusername|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "fs",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "just import the module",
+      "id": "filename:./application/sqldatacenter.js|name:fs|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "lambda",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "its value is 0.0005.",
+      "id": "filename:./application/sqldatacenter.js|name:lambda|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "sqldatacenter",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "const sqldatacenter={// functions and gloalvariables that it own   //}",
+      "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "pool",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "const pool = mysql.createPool({\n    host: 'testmysql-1.crseg8qams8s.ap-southeast-2.rds.amazonaws.com',\n    user: sqlusername,\n    password: sqlpassword,\n    database: 'newTestdatabase',\n    waitForConnections: true,\n    connectionLimit: 10,\n    queueLimit: 0\n}).promise();",
+      "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "checkuserexists",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (username [type:string])\n\nreturn: boolean\n\nlogic:\n去userinfo查詢有無username欄位和函數輸入一樣的資料，有或查詢失敗則return true，無則return false",
+      "id": "filename:./application/sqldatacenter.js|name:checkuserexists|placeType:server|type:Function"
+    },
+    {
+      "name": "searchusernamebyuserID",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (userID [type:int])\n\nreturn: string or null\n\nlogic:\n去userinfo查詢userID欄位和輸入一樣的資料，返回那項資料的username。找不到或失敗則返回null。",
+      "id": "filename:./application/sqldatacenter.js|name:searchusernamebyuserID|placeType:server|type:Function"
+    },
+    {
+      "name": "searchuserIDbyusername",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (username [type:string])\n\nreturn: int or null\n\nlogic:\n去userinfo查詢username欄位和輸入一樣的資料，返回那項資料的userID。找不到或失敗則返回null。",
+      "id": "filename:./application/sqldatacenter.js|name:searchuserIDbyusername|placeType:server|type:Function"
+    },
+    {
+      "name": "modifyuserpostsinfo",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (post_id [type:int],secondTime [type:int],article[type:int],imagepath[type:int])\n\nreturn: (a string [type:string])\n\n\nlogic:\n去userpostsinfo找到該post_id對應到的欄位，把secondTime,article,imagepath設為函數輸入值，而created_at設為FROM_UNIXTIME(?)。\n如果找不到，或是執行失敗，return \"fail\"，一切成功的話return \"success\"。",
+      "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfo|placeType:server|type:Function"
+    },
+    {
+      "name": "Appenduserpostsinfo",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (timestamp [Type:int],userID [Type:int])\n\nreturn: (a string [type:string])\n\nlogic:\n\n先用generatePostId(timestamp,userID)計算出post_id，然後把(post_id, user_id)插入userpostsinfo。插入成功要return \"success\", 失敗就return \"fail\"",
+      "id": "filename:./application/sqldatacenter.js|name:Appenduserpostsinfo|placeType:server|type:Function"
+    },
+    {
+      "name": "diduserlikepost",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (user_id [type:int ],post_id [type:int])\n\nreturn: (a boolean [Type:boolean])\n\nlogic: \n前往userlikesinfo查詢有無欄位ost_id和欄位user_id都符合函數輸入的資料，有就return true，失敗或沒有就傳return false",
+      "id": "filename:./application/sqldatacenter.js|name:diduserlikepost|placeType:server|type:Function"
+    },
+    {
+      "name": "makepost",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input:(username [type string],imagepath [type:string],article [type:string],secondTime [type:string]);\n\nreturn: (a string [type:string])\n\n\nlogic:\ndo things as below. if they all succeed,then return \"success\";otherwise, return \"false\".\n\n     const userID=await searchuserIDbyusername(username);\n     await Appenduserpostsinfo(secondTime,userID);\n     const post_id=generatePostId(secondTime,userID);\n     await modifyuserpostsinfo(post_id,secondTime,article,imagepath);\n\t\t\n     await modifyuserpostsinfouserID(userID,post_id);",
+      "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+    },
+    {
+      "name": "modifyuserpostsinfouserID",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (user_ID [Type:int],post_id [Type:int])\n\nfunction type: it is async\n\nreturn: (a string [type:string])\nlogic: 去userpostsinfo找到post_id對應的user_ID，然後把user_ID欄改成函數輸入值。如果失敗或找不到對應，回傳\"fail\";成功就回傳\"success\"。",
+      "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfouserID|placeType:server|type:Function"
+    },
+    {
+      "name": "searchlike_count",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (post_id [Type:int ])\n\nfunction type: it is async\n\nreturn (a number or null [type:int])\nlogic:\n先檢查input是否為空。去userpostsinfo找到該post_id對應到的like_count，若找不到則返回null。",
+      "id": "filename:./application/sqldatacenter.js|name:searchlike_count|placeType:server|type:Function"
+    },
+    {
+      "name": "updateAndSendGlobalRecommendNumber",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: no input\n\nreturn: a json array，每個element是有post_id,globalrecommendscore,user_id這三個key的json，post_id對應到string，而\nglobalrecommendscore和user_id對應到int。\n\n\nfunction type: it is async\n\n\nlogic:\n\n先去userpostsinfo把所有is_deleted=FALSE的資料的post_id, like_count, secondTime抓下來，這樣會得到一個陣列。遍歷這個陣列，計算出元素的timeSincePosted=Date.now()-element.secondTime;。把元素的like_count還有timeSincePosted交給GlobalRecommendNumberCalculator計算分數，把這個分數存到userpostsinfo中該元素的post_id的globalrecommendscore欄位。\n\n最後，去userpostsinfo把所有is_deleted=FALSE的資料的post_id,globalrecommendscore,user_id抓下來，這樣會得到一個陣列。return這個陣列。",
+      "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+    },
+    {
+      "name": "unsendlike",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (user_id [type:int],post_id [type:int])\n\nreturn: ( a string [type:string])\n\n\nfunction type: it is async\n\nlogic:\n都用transaction\n先檢查去userlikesinfo檢查這個user_id是不是已經對此post_id按讚了。若無，直接return \"neverLikeBefore\"；若有，在userlikesinfo刪除這個like，然後再去userpostsinfo更新userpostsinfo中的該post_id的讚數。這個步驟中，成功就return \"success\"， 失敗就return \"fail\"）。",
+      "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+    },
+    {
+      "name": "sendlike",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (user_id [type:int],post_id [type:int])\n\nreturn: ( a string [type:string])\n\nfunction type: it is async\n\nlogic:\n一切都用transaction。\n先檢查去userlikesinfo檢查這個user_id是不是已經對此post_id按讚了。若有，直接return \"alreadyExist\"；若無，userlikesinfo插入一個這個like，然後再去userpostsinfo更新userpostsinfo中的該post_id的讚數。（這個步驟中，成功就return \"success\"， 失敗就return \"fail\"）。",
+      "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+    },
+    {
+      "name": "readPostByPost_id",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input:(post_id)\n\nreturn: ([type:json])\n\nfunction type: it is async\n\nlogic:\n前往所提及的資料庫table搜尋該post_id對應的所有欄位內容，然後返回他。若沒東西就返回null",
+      "id": "filename:./application/sqldatacenter.js|name:readPostByPost_id|placeType:server|type:Function"
+    },
+    {
+      "name": "Verify_LoginToken",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input:(username [Type: string],token [Type: string])\n\nreturn (true or false [Type:boolean])\n\nfunction type: it is async\n\nLogic:\n前往userLoginToken的對應username欄位，先看看他是不是null，如果是null就return false。看看資料庫的token和函式輸入的token是否相同。相同就返回true，不相同就返回false",
+      "id": "filename:./application/sqldatacenter.js|name:Verify_LoginToken|placeType:server|type:Function"
+    },
+    {
+      "name": "Write_LoginToken",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input:(username [Type: string])\n\nreturn : ( a json that contains state and token. state and token are string[Type: json])\n\nfunction type: it is async\n\nLogic:\n在本函式，運用jwt，還有系統時間、username，生成一個簽章，把該簽章存入userLoginToken該table中對應到函式輸入的username的那欄（如果沒有欄位就創造一個）。然後成功就在ｒｅｔｕｒｎ的那個json的state填\"success\"，token填剛剛的signature；失敗則state填\"fail\"，token填\"\".",
+      "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+    },
+    {
+      "name": "generatePostId",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input:(timestamp [Type: int],userId [Type: int])\n\nreturn: (a big INT number [Type: BigInt])\n\nLogic:\n輸出的數字末十位放userId，userId前面放timestamp",
+      "id": "filename:./application/sqldatacenter.js|name:generatePostId|placeType:server|type:Function"
+    },
+    {
+      "name": "jwt",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "just import it",
+      "id": "filename:./application/sqldatacenter.js|name:jwt|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "JWT_SECRET",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "I will do this",
+      "id": "filename:./application/sqldatacenter.js|name:JWT_SECRET|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "GlobalRecommendNumberCalculator",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input :(like_count[type:int ],timeSincePosted [type:int])\n\nreturn (score [Type:int)\n\nlogic:\n\nreturn Math.round(1000*like_count+1000000*Math.exp(-lambda*(timeＳinceＰosted/1000)))",
+      "id": "filename:./application/sqldatacenter.js|name:GlobalRecommendNumberCalculator|placeType:server|type:Function"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "jsonwebtoken",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:jsonwebtoken|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "fs",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:fs|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "sqlusername",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqlusername",
+      "description": "I'll do it by my self",
+      "id": "filename:./application/sqlusername|name:sqlusername|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "sqlpassword",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/sqlpassword",
+      "description": "I'll do it By myself",
+      "id": "filename:./application/sqlpassword|name:sqlpassword|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "mysql2",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:mysql2|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "/",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/',get__handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "/givePostSuggest",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/givePostSuggest',get_givePostSuggest_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/givePostSuggest|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "/readPost",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/readPost',get_readPost_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/readPost|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "/sendlike",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/sendlike',post_sendlike_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/sendlike|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "/unsendlike",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/unsendlike',post_unsendlike_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/unsendlike|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "/register",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/register',get_register_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "/register",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/register',post_register_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "/login",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/login',get_login_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "/login",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/login',post_login_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "/makepost",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/makepost',upload.single(\"imagefile\"),post_makepost_handler);\n這樣寫就好。",
+      "id": "filename:./application/index.js|name:/makepost|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "post_makepost_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input: (req,res)\n\nreturn:隨意\n\nlogic: 先把req的cookie中的username和token抓出來，然後利用sqldatacenter.Verify_LoginToken來做確認。如果身分驗證正確，那利用sqldatacenter.searchuserIDbyusernameuser_id來找到user_id，以及用當下時間生成一個timestamp，一起送往sqldatacenter.generatePostId生成post_id。關於貼文的圖片呢，他是在req.file,要把req.file.buffer儲存在名為\"/home/ec2-user/postsimages\"的目錄下，副檔名用path.extname(req.file.originalname)然後檔名用post_id。目錄如果不存在需要自己生成喔。如果檔案寫入失敗，就結束一切，res.send(\"fail\")。從req.body中取出article，以及已有的username和timestamp，還有圖片存放的檔案路徑，一起送往sqldatacenter.makepost函式。如果sqldatacenter.makepost回傳\"success\"，res.send(\"success\")，而其餘的情況，都用res.send(\"fail\")。",
+      "id": "filename:./application/index.js|name:post_makepost_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "post_sendlike_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input: (req,res)\n\nreturn:隨意\n\nlogic: 先把req的cookie中的username和token抓出來，然後利用sqldatacenter.Verify_LoginToken來做確認。如果身分驗證正確，那就先用sqldatacenter.searchuserIDbyusername來查user_id，以及抓出req.body中的post_id來執行sqldatacenter.sendlike。如果一切成功，就res.send({\"state\":\"success\"})。如果過程中有任何失敗，例如身分驗證失敗，就res.send({\"state\":\"fail\"})。",
+      "id": "filename:./application/index.js|name:post_sendlike_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "post_unsendlike_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input: (req,res)\n\nreturn:隨意\n\nlogic: 先把req的cookie中的username和token抓出來，然後利用sqldatacenter.Verify_LoginToken來做確認。如果身分驗證正確，那就先用sqldatacenter.searchuserIDbyusername來查user_id，以及抓出req.body中的post_id來執行sqldatacenter.unsendlike。如果一切成功，就res.send({\"state\":\"success\"})。如果過程中有任何失敗，例如身分驗證失敗，就res.send({\"state\":\"fail\"})。",
+      "id": "filename:./application/index.js|name:post_unsendlike_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "post_register_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input (req,res)\n\nreturn:隨意\n\nlogic:\n先去req.body拿出requestedUsername和requestedHashed_Password。使用sqldatacenter.checkuserexists來查詢requestedUsername這個名稱是否已被註冊。如果是，res.send(\"thisUsernameAlreadyExist\")。如果不是，使用Create_UserAccount把requestedUsername和requestedHashed_Password填入，如果他回傳\"success\"，就res.send(\"success\")，如果回傳\"fail\"，就res.send(\"fail\")。",
+      "id": "filename:./application/index.js|name:post_register_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "post_login_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input (req,res)\n\nreturn:隨意\n\nlogic\n將req.body中的username和hashed_password交給sqldatacenter.Verify_HashedPassword來檢查是否正確，正確的話就sql.Write_LoginToken和req.body中的username來生成token並寫入資料庫，然後sql.Write_LoginToken的回傳結果如果成功就把結果中的token放到使用者的cookie，然後也把username放到使用者的cookie，然後res.json({\"state\":\"success\"})。而其他的情況，如密碼錯誤，或是寫入token失敗，則res.json({\"state\":\"fail\"})",
+      "id": "filename:./application/index.js|name:post_login_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "get__handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nreturn 隨意\n\nlogic:\n\n檢查req中的cookie，如果有username和Token，就送去給sqldatacenter中的Verify_LoginToken驗證，如果成功就運用returnMainpage及username來獲取要傳送給前端的html程式碼，用res.send傳到前端。其他情況則是用res.sendFile以及path,__dirname來讀取並送出NotloginMainpage.html",
+      "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "get_givePostSuggest_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nreturn 隨意\n\nlogic:\n\n呼叫sqldatacenter.updateAndSendGlobalRecommendNumber，然後把他的回傳值用res.json()傳到前端",
+      "id": "filename:./application/index.js|name:get_givePostSuggest_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "get_readPost_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nreturn 隨意\n\nlogic:從req.query讀取post_id，然後用sqldatacenterreadPostByPost_id和post_id來獲取一個json物件。這個json物件我們把他叫postObject好了。從那個物件的imagepath利用fs來讀取，讀出來的東西叫做imagecontent。利用sqldatacenter.searchusernamebyuserID(post_Object.user_id)來找到作者名username。如果一切順利，\nres.json({\"imagecontent\":imagecontent,\"article\":post_Object.article,\"created_at\":post_Object.created_at,\"like_count\":post_Object.like_count,\"author\":username})。",
+      "id": "filename:./application/index.js|name:get_readPost_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "get_register_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nlogic:\n\nres.sendFile(path.join(__dirname,'Registerpage.html'));",
+      "id": "filename:./application/index.js|name:get_register_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "get_login_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nlogic:\n\nres.sendFile(path.join(__dirname,'Loginpage.html'));",
+      "id": "filename:./application/index.js|name:get_login_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "sqldatacenter",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import it",
+      "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "./application/NotloginMainpage.html",
+      "type": "server_file",
+      "placeType": "server",
+      "filename": "./application/NotloginMainpage.html",
+      "description": "I should do this component by myself",
+      "id": "filename:./application/NotloginMainpage.html|name:./application/NotloginMainpage.html|placeType:server|type:server_file"
+    },
+    {
+      "name": "returnMainpage",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import it",
+      "id": "filename:./application/index.js|name:returnMainpage|placeType:server|type:Function"
+    },
+    {
+      "name": "returnMainpage",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/returnMainpage.js",
+      "description": "input (username [type:string])",
+      "id": "filename:./application/returnMainpage.js|name:returnMainpage|placeType:server|type:Function"
+    },
+    {
+      "name": "path",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "path",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:path|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "Write_HashedPassword",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "since i don't need it now, just write it as am empty function",
+      "id": "filename:./application/sqldatacenter.js|name:Write_HashedPassword|placeType:server|type:Function"
+    },
+    {
+      "name": "Verify_HashedPassword",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (username [type:string],hashedpassword [type:string])\n\nreturn: boolean\n\nlogic:\n直接去userHashedPassword比對是否吻合。吻合傳true，不吻合傳false.",
+      "id": "filename:./application/sqldatacenter.js|name:Verify_HashedPassword|placeType:server|type:Function"
+    },
+    {
+      "name": "Create_UserAccount",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input: (username [type:string],hashedpassword [type:string])\n\nreturn: a string \n\nlogic:\nmysql資料庫的寫入使用transaction. 插入input的相關資料到userHashedPassword、userinfo、userLoginToken。如果一切都成功，回傳\"success\"，反之，回傳\"fail\".",
+      "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+    },
+    {
+      "name": "express",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:express|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "express",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:express|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "app",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "cookie",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:cookie|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "cookie",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:cookie|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "multer",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:multer|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "multer",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:multer|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "storage",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "const storage=multer.memoryStorage();",
+      "id": "filename:./application/index.js|name:storage|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "upload",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "const upload=multer({\"storage\":storage});",
+      "id": "filename:./application/index.js|name:upload|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "cookieparser",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:cookieparser|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "options",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "const options = {\n  key: fs.readFileSync('/etc/letsencrypt/live/gotestapp.com/privkey.pem'),\n  cert: fs.readFileSync('/etc/letsencrypt/live/gotestapp.com/fullchain.pem'),\n  \n};",
+      "id": "filename:./application/index.js|name:options|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "module",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "cookie-parser",
+      "description": "it is an external module. no need to write it",
+      "id": "filename:cookie-parser|name:module|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "fs",
+      "type": "GlobalVariable",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "just import the module",
+      "id": "filename:./application/index.js|name:fs|placeType:server|type:GlobalVariable"
+    },
+    {
+      "name": "/etc/letsencrypt/live/gotestapp.com/privkey.pem",
+      "type": "server_file",
+      "placeType": "server",
+      "filename": "/etc/letsencrypt/live/gotestapp.com/privkey.pem",
+      "description": "its is a file. No need to write it",
+      "id": "filename:/etc/letsencrypt/live/gotestapp.com/privkey.pem|name:/etc/letsencrypt/live/gotestapp.com/privkey.pem|placeType:server|type:server_file"
+    },
+    {
+      "name": "/etc/letsencrypt/live/gotestapp.com/fullchain.pem",
+      "type": "server_file",
+      "placeType": "server",
+      "filename": "/etc/letsencrypt/live/gotestapp.com/fullchain.pem",
+      "description": "its is a file. No need to write it",
+      "id": "filename:/etc/letsencrypt/live/gotestapp.com/fullchain.pem|name:/etc/letsencrypt/live/gotestapp.com/fullchain.pem|placeType:server|type:server_file"
+    },
+    {
+      "name": "Loginpage.html",
+      "type": "server_file",
+      "placeType": "server",
+      "filename": "Loginpage.html",
+      "description": "its is a .html file. I'll write it by myself",
+      "id": "filename:Loginpage.html|name:Loginpage.html|placeType:server|type:server_file"
+    },
+    {
+      "name": "Registerpage.html",
+      "type": "server_file",
+      "placeType": "server",
+      "filename": "Registerpage.html",
+      "description": "its is a .html file. I'll write it by myself",
+      "id": "filename:Registerpage.html|name:Registerpage.html|placeType:server|type:server_file"
+    },
+    {
+      "name": "/logout",
+      "type": "APIEndpoint[POST]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.post('/logout',post_logout_handler);",
+      "id": "filename:./application/index.js|name:/logout|placeType:server|type:APIEndpoint[POST]"
+    },
+    {
+      "name": "post_logout_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input (req,res)\n\nreturn:隨意 \n\nlogic:\n先去req.cookie拿到username和token，輸入sqldatacenter.Verify_LoginToken做檢查，檢查正確後再用sqldatacenter.logout及username做登出的動作。如果一切成功然後sqldatacenter.logout回傳\"success\"，就res.send(\"success\");。其他情況則res.send(\"fail\");。",
+      "id": "filename:./application/index.js|name:post_logout_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "logout",
+      "type": "Function",
+      "placeType": "server",
+      "filename": "./application/sqldatacenter.js",
+      "description": "input :(username [type:string])\n\n\nreturn : (a string [type: string])\n\nlogic:\n\n前往userLoginToken，把對應到input的username對應到的欄位token值改成null.如果找不到這個欄位，或是過程失敗，return \"fail\"，成功則return \"success\".",
+      "id": "filename:./application/sqldatacenter.js|name:logout|placeType:server|type:Function"
+    },
+    {
+      "name": "cookieparser()",
+      "type": "APIEndpoint[USE]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.use(cookieparser());",
+      "id": "filename:./application/index.js|name:cookieparser()|placeType:server|type:APIEndpoint[USE]"
+    },
+    {
+      "name": "express.json()",
+      "type": "APIEndpoint[USE]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.use(cookieparser());",
+      "id": "filename:./application/index.js|name:express.json()|placeType:server|type:APIEndpoint[USE]"
+    },
+    {
+      "name": "/userlikepost",
+      "type": "APIEndpoint[GET]",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "app.get('/userlikepost',get_userlikepost_handler);",
+      "id": "filename:./application/index.js|name:/userlikepost|placeType:server|type:APIEndpoint[GET]"
+    },
+    {
+      "name": "get_userlikepost_handler",
+      "type": "EndpointHandler",
+      "placeType": "server",
+      "filename": "./application/index.js",
+      "description": "input:(req,res)\n\nreturn 隨意\n\nlogic:\n\n檢查req中的cookie，如果有username和Token，就送去給sqldatacenter中的Verify_LoginToken驗證，如果成功就運用sqldatacenter.searchuserIDbyusername和username來找到user_id，以及在req.query找到post_id，用sqldatacenter.diduserlikepost及user_id和post_id，如果回傳true則res.send(\"true\")，其他情況則res.send(\"false\");",
+      "id": "filename:./application/index.js|name:get_userlikepost_handler|placeType:server|type:EndpointHandler"
+    },
+    {
+      "name": "userlikesinfo",
+      "type": "Table",
+      "placeType": "mysql",
+      "filename": "newTestdatabase",
+      "description": "這是一張用來記錄用戶對貼文按讚行為的資料表，每一筆紀錄代表某個用戶對某篇貼文的一次喜歡動作。\n\n- `user_id`：執行按讚行為的使用者 ID，為主鍵之一。\n- `post_id`：被按讚的貼文 ID，為主鍵之一，與 user_id 共同構成複合主鍵。\n- `liked_at`：按讚的時間，為 timestamp，預設為當下時間。\n- `created_at`：紀錄建立時間，與 liked_at 可相同，作為資料建立追蹤。\n\n+------------+------------------+------+-----+-------------------+-----------------------+\n| Field      | Type             | Null | Key | Default           | Extra                 |\n+------------+------------------+------+-----+-------------------+-----------------------+\n| user_id    | bigint           | NO   | PRI | NULL              |                       |\n| post_id    | decimal(30,0)    | NO   | PRI | NULL              |                       |\n| liked_at   | timestamp        | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED     |\n| created_at | datetime         | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED     |\n+------------+------------------+------+-----+-------------------+-----------------------+",
+      "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+    },
+    {
+      "name": "userpostsinfo",
+      "type": "Table",
+      "placeType": "mysql",
+      "filename": "newTestdatabase",
+      "description": "這是一張紀錄使用者貼文資料的主要表格，包含貼文內容、按讚數、建立時間、圖片路徑與推薦分數等欄位，亦支援刪除與封鎖邏輯。\n\n- `post_id`：貼文的唯一識別碼，為主鍵。\n- `user_id`：發文者的用戶 ID。\n- `like_count`：此貼文累積的按讚數，初始為 0。\n- `secondTime`：使用者在發文當下停留於創作頁的毫秒數，可作為創作投入程度或品質預測指標。\n- `article`：貼文的正文內容。\n- `imagepath`：附加圖片的儲存路徑（URL 或檔名）。\n- `created_at`：貼文發表時間。\n- `globalrecommendscore`：全局推薦分數，可能由推薦系統演算法產出，用來排序或曝光。\n- `is_deleted`：邏輯刪除標記，0 表示正常，1 表示已刪除。\n- `deleted_at_seconds`：刪除時間的 Unix timestamp。\n- `deleted_at_datetime`：刪除時間的 datetime 格式。\n- `is_banned`：是否因違規等原因被封鎖（貼文無法顯示）。\n- `ban_reason`：封鎖理由文字說明。\n- `ban_at`：貼文被封鎖的時間。\n\n+------------------------+------------------+------+-----+--------+-------+\n| Field                  | Type             | Null | Key | Default| Extra |\n+------------------------+------------------+------+-----+--------+-------+\n| post_id                | decimal(30,0)     | NO   | PRI | NULL   |       |\n| user_id                | bigint            | NO   | MUL | NULL   |       |\n| like_count             | int unsigned      | YES  |     | 0      |       |\n| secondTime             | bigint            | YES  |     | NULL   |       |\n| article                | text              | YES  |     | NULL   |       |\n| imagepath              | varchar(500)      | YES  |     | NULL   |       |\n| created_at             | datetime          | YES  |     | NULL   |       |\n| globalrecommendscore   | bigint            | YES  |     | NULL   |       |\n| is_deleted             | tinyint(1)        | YES  |     | 0      |       |\n| deleted_at_seconds     | bigint            | YES  |     | NULL   |       |\n| deleted_at_datetime    | datetime          | YES  |     | NULL   |       |\n| is_banned              | tinyint(1)        | YES  |     | 0      |       |\n| ban_reason             | text              | YES  |     | NULL   |       |\n| ban_at                 | datetime          | YES  |     | NULL   |       |\n+------------------------+------------------+------+-----+--------+-------+",
+      "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+    },
+    {
+      "name": "userinfo",
+      "type": "Table",
+      "placeType": "mysql",
+      "filename": "newTestdatabase",
+      "description": "這是一張用來記錄系統中所有使用者基本資訊的資料表，每一筆紀錄代表一位註冊用戶。\n\nuser_id：使用者的唯一識別碼，為主鍵，整數型別，自動遞增。\n\nusername：使用者帳號名稱，為文字型別（varchar），必須唯一、不得為空，用來辨識該用戶在系統中的公開名稱。\n\n+----------+-------------+------+-----+---------+----------------+\n| Field    | Type        | Null | Key | Default | Extra          |\n+----------+-------------+------+-----+---------+----------------+\n| user_id  | int         | NO   | PRI | NULL    | auto_increment |\n| username | varchar(50) | NO   | UNI | NULL    |                |\n+----------+-------------+------+-----+---------+----------------+",
+      "id": "filename:newTestdatabase|name:userinfo|placeType:mysql|type:Table"
+    },
+    {
+      "name": "userLoginToken",
+      "type": "Table",
+      "placeType": "mysql",
+      "filename": "newTestdatabase",
+      "description": "這是一張用來記錄使用者登入狀態與 token 的資料表。每一筆紀錄代表一位使用者在某個時間點所獲頒的一組登入 token，用於驗證其登入身份。\n\nusername\n\ntoken：發放給該使用者的登入憑證，用於存取受保護資源。\n\nissued_at：token 發行時間，為 timestamp，預設為當下時間。\n\nexpires_at：token 的過期時間，若已過期則無效，為 timestamp。\n\ncreated_at：資料建立時間，可與 issued_at 相同，用於稽核與紀錄追蹤。\n\n\n+------------+--------------+------+-----+---------------------+----------------+\n| Field      | Type         | Null | Key | Default             | Extra          |\n+------------+--------------+------+-----+---------------------+----------------+\n| username   | varchar(50)  | NO   | PRI | NULL                |                |\n| token      | varchar(255) | NO   |     | NULL                |                |\n| issued_at  | timestamp    | NO   |     | CURRENT_TIMESTAMP   |                |\n| expires_at | timestamp    | YES  |     | NULL                |                |\n| created_at | timestamp    | NO   |     | CURRENT_TIMESTAMP   |                |\n+------------+--------------+------+-----+---------------------+----------------+",
+      "id": "filename:newTestdatabase|name:userLoginToken|placeType:mysql|type:Table"
+    },
+    {
+      "name": "userHashedPassword",
+      "type": "Table",
+      "placeType": "mysql",
+      "filename": "newTestdatabase",
+      "description": "| Field            | Type           | Null | Key | Default | Extra |\n| ---------------- | -------------- | ---- | --- | ------- | ----- |\n| username         | varchar(50)    | NO   | PRI | NULL    |       |\n| hashed_password  | varchar(255)   | NO   |     | NULL    |       |\n\n\n用途說明：\n此資料表用於儲存使用者帳號及其對應的雜湊後密碼，用於登入身份驗證。系統僅保存不可逆的雜湊字串，不儲存明文密碼。每筆紀錄代表一位使用者。\n\n| 欄位名稱              | 說明                                                                |\n| ----------------- | ----------------------------------------------------------------- |\n| `username`        | 使用者帳號，為主鍵。限制長度為 50 個字元，必須唯一且不可為 NULL。此欄位用於辨識使用者身分。                |\n| `hashed_password` | 雜湊後的密碼字串。長度上限為 255 字元，建議使用 bcrypt、argon2 等安全演算法雜湊後儲存。此欄位不可為 NULL。 |",
+      "id": "filename:newTestdatabase|name:userHashedPassword|placeType:mysql|type:Table"
+    }
+  ],
+  "edges": [
+    {
+      "from": {
+        "name": "mysql",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:mysql|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "mysql2",
+        "id": "filename:mysql2|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "sqlpassword",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqlpassword|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sqlpassword",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqlpassword",
+        "id": "filename:./application/sqlpassword|name:sqlpassword|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "sqlusername",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqlusername|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sqlusername",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqlusername",
+        "id": "filename:./application/sqlusername|name:sqlusername|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "fs",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:fs|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "fs",
+        "id": "filename:fs|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "readPostByPost_id",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:readPostByPost_id|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "unsendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "updateAndSendGlobalRecommendNumber",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "searchlike_count",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchlike_count|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "diduserlikepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:diduserlikepost|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Appenduserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Appenduserpostsinfo|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "modifyuserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfo|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "searchuserIDbyusername",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchuserIDbyusername|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "searchusernamebyuserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchusernamebyuserID|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "checkuserexists",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:checkuserexists|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "modifyuserpostsinfouserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfouserID|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Verify_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_LoginToken|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Write_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "generatePostId",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:generatePostId|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Write_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_HashedPassword|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Verify_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_HashedPassword|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "Create_UserAccount",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "logout",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:logout|placeType:server|type:Function"
+      },
+      "type": "own"
+    },
+    {
+      "from": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "mysql",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:mysql|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sqlusername",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqlusername|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sqlpassword",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqlpassword|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "checkuserexists",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:checkuserexists|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "checkuserexists",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:checkuserexists|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "searchusernamebyuserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchusernamebyuserID|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "searchusernamebyuserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchusernamebyuserID|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "searchuserIDbyusername",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchuserIDbyusername|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "searchuserIDbyusername",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchuserIDbyusername|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "modifyuserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfo|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "modifyuserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfo|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "Appenduserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Appenduserpostsinfo|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Appenduserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Appenduserpostsinfo|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "diduserlikepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:diduserlikepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "diduserlikepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:diduserlikepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userlikesinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "Appenduserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Appenduserpostsinfo|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "generatePostId",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:generatePostId|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "modifyuserpostsinfo",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfo|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "makepost",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:makepost|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "modifyuserpostsinfouserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfouserID|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "modifyuserpostsinfouserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfouserID|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "modifyuserpostsinfouserID",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:modifyuserpostsinfouserID|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "searchlike_count",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchlike_count|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "searchlike_count",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:searchlike_count|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "updateAndSendGlobalRecommendNumber",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "updateAndSendGlobalRecommendNumber",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "updateAndSendGlobalRecommendNumber",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "updateAndSendGlobalRecommendNumber",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:updateAndSendGlobalRecommendNumber|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "GlobalRecommendNumberCalculator",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:GlobalRecommendNumberCalculator|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "unsendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userlikesinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "unsendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userlikesinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "unsendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "unsendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:unsendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "sendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "sendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userlikesinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "sendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userlikesinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userlikesinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "sendlike",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sendlike|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "readPostByPost_id",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:readPostByPost_id|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "readPostByPost_id",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:readPostByPost_id|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userpostsinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userpostsinfo|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "Verify_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Verify_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userLoginToken",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userLoginToken|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "Write_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Write_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userLoginToken",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userLoginToken|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "Write_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "jwt",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:jwt|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Write_LoginToken",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_LoginToken|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "JWT_SECRET",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:JWT_SECRET|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "jwt",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:jwt|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "jsonwebtoken",
+        "id": "filename:jsonwebtoken|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "GlobalRecommendNumberCalculator",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:GlobalRecommendNumberCalculator|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "lambda",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:lambda|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get__handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/givePostSuggest",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/givePostSuggest|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get_givePostSuggest_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_givePostSuggest_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/givePostSuggest",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/givePostSuggest|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/readPost",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/readPost|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get_readPost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_readPost_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/readPost",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/readPost|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/sendlike",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/sendlike|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_sendlike_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_sendlike_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/sendlike",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/sendlike|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/unsendlike",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/unsendlike|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_unsendlike_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_unsendlike_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/unsendlike",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/unsendlike|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/register",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get_register_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_register_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/register",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/register",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_register_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_register_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/register",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/register|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/login",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get_login_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_login_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/login",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/login",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_login_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_login_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/login",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/login|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/makepost",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/makepost|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_makepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_makepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "/makepost",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/makepost|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_makepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_makepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_makepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_makepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "fs",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:fs|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_makepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_makepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "path",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_sendlike_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_sendlike_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_unsendlike_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_unsendlike_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_register_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_register_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "post_login_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_login_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get__handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get__handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "returnMainpage",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:returnMainpage|placeType:server|type:Function"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get__handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "./application/NotloginMainpage.html",
+        "type": "server_file",
+        "placeType": "server",
+        "filename": "./application/NotloginMainpage.html",
+        "id": "filename:./application/NotloginMainpage.html|name:./application/NotloginMainpage.html|placeType:server|type:server_file"
+      },
+      "type": "read_server_file"
+    },
+    {
+      "from": {
+        "name": "get__handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get__handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "path",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get_givePostSuggest_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_givePostSuggest_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get_readPost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_readPost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get_readPost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_readPost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "fs",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:fs|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get_register_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_register_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "Registerpage.html",
+        "type": "server_file",
+        "placeType": "server",
+        "filename": "Registerpage.html",
+        "id": "filename:Registerpage.html|name:Registerpage.html|placeType:server|type:server_file"
+      },
+      "type": "read_server_file"
+    },
+    {
+      "from": {
+        "name": "get_register_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_register_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "path",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "get_login_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_login_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "Loginpage.html",
+        "type": "server_file",
+        "placeType": "server",
+        "filename": "Loginpage.html",
+        "id": "filename:Loginpage.html|name:Loginpage.html|placeType:server|type:server_file"
+      },
+      "type": "read_server_file"
+    },
+    {
+      "from": {
+        "name": "get_login_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_login_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "path",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "returnMainpage",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:returnMainpage|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "returnMainpage",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/returnMainpage.js",
+        "id": "filename:./application/returnMainpage.js|name:returnMainpage|placeType:server|type:Function"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "path",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:path|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "path",
+        "id": "filename:path|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "Write_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_HashedPassword|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Write_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Write_HashedPassword|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userHashedPassword",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userHashedPassword|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "Verify_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_HashedPassword|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Verify_HashedPassword",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Verify_HashedPassword|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userHashedPassword",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userHashedPassword|placeType:mysql|type:Table"
+      },
+      "type": "reads_table"
+    },
+    {
+      "from": {
+        "name": "Create_UserAccount",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "Create_UserAccount",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userHashedPassword",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userHashedPassword|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "Create_UserAccount",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userinfo",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userinfo|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "Create_UserAccount",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:Create_UserAccount|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userLoginToken",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userLoginToken|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "express",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:express|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "express",
+        "id": "filename:express|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "express",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:express|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "cookie",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:cookie|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "cookie",
+        "id": "filename:cookie|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "multer",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:multer|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "multer",
+        "id": "filename:multer|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "storage",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:storage|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "multer",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:multer|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "upload",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:upload|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "multer",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:multer|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "cookieparser",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:cookieparser|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "cookie-parser",
+        "id": "filename:cookie-parser|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "options",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:options|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "fs",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:fs|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "options",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:options|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "/etc/letsencrypt/live/gotestapp.com/privkey.pem",
+        "type": "server_file",
+        "placeType": "server",
+        "filename": "/etc/letsencrypt/live/gotestapp.com/privkey.pem",
+        "id": "filename:/etc/letsencrypt/live/gotestapp.com/privkey.pem|name:/etc/letsencrypt/live/gotestapp.com/privkey.pem|placeType:server|type:server_file"
+      },
+      "type": "read_server_file"
+    },
+    {
+      "from": {
+        "name": "options",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:options|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "/etc/letsencrypt/live/gotestapp.com/fullchain.pem",
+        "type": "server_file",
+        "placeType": "server",
+        "filename": "/etc/letsencrypt/live/gotestapp.com/fullchain.pem",
+        "id": "filename:/etc/letsencrypt/live/gotestapp.com/fullchain.pem|name:/etc/letsencrypt/live/gotestapp.com/fullchain.pem|placeType:server|type:server_file"
+      },
+      "type": "read_server_file"
+    },
+    {
+      "from": {
+        "name": "fs",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:fs|placeType:server|type:GlobalVariable"
+      },
+      "to": {
+        "name": "module",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "fs",
+        "id": "filename:fs|name:module|placeType:server|type:GlobalVariable"
+      },
+      "type": "imported"
+    },
+    {
+      "from": {
+        "name": "/logout",
+        "type": "APIEndpoint[POST]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/logout|placeType:server|type:APIEndpoint[POST]"
+      },
+      "to": {
+        "name": "post_logout_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_logout_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "post_logout_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:post_logout_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "logout",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:logout|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "userLoginToken",
+        "type": "Table",
+        "placeType": "mysql",
+        "filename": "newTestdatabase",
+        "id": "filename:newTestdatabase|name:userLoginToken|placeType:mysql|type:Table"
+      },
+      "type": "writes_table"
+    },
+    {
+      "from": {
+        "name": "logout",
+        "type": "Function",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:logout|placeType:server|type:Function"
+      },
+      "to": {
+        "name": "pool",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/sqldatacenter.js",
+        "id": "filename:./application/sqldatacenter.js|name:pool|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "cookieparser()",
+        "type": "APIEndpoint[USE]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:cookieparser()|placeType:server|type:APIEndpoint[USE]"
+      },
+      "to": {
+        "name": "cookieparser",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:cookieparser|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "cookieparser()",
+        "type": "APIEndpoint[USE]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:cookieparser()|placeType:server|type:APIEndpoint[USE]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "express.json()",
+        "type": "APIEndpoint[USE]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:express.json()|placeType:server|type:APIEndpoint[USE]"
+      },
+      "to": {
+        "name": "express",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:express|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "express.json()",
+        "type": "APIEndpoint[USE]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:express.json()|placeType:server|type:APIEndpoint[USE]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/userlikepost",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/userlikepost|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "app",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:app|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    },
+    {
+      "from": {
+        "name": "/userlikepost",
+        "type": "APIEndpoint[GET]",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:/userlikepost|placeType:server|type:APIEndpoint[GET]"
+      },
+      "to": {
+        "name": "get_userlikepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_userlikepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "type": "handled_by"
+    },
+    {
+      "from": {
+        "name": "get_userlikepost_handler",
+        "type": "EndpointHandler",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:get_userlikepost_handler|placeType:server|type:EndpointHandler"
+      },
+      "to": {
+        "name": "sqldatacenter",
+        "type": "GlobalVariable",
+        "placeType": "server",
+        "filename": "./application/index.js",
+        "id": "filename:./application/index.js|name:sqldatacenter|placeType:server|type:GlobalVariable"
+      },
+      "type": "calls"
+    }
+  ]
+}
