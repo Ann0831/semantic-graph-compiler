@@ -9,7 +9,7 @@ In this system:
 
 - Each **component** (e.g., function, API endpoint, global variable) is modeled as a **node**, with each node assigned to a **finite set of predefined types** such as `Function`, `GlobalVariable`, `EndpointHandler`, etc.
   The user also provides a **`description** within each node to define the operational logic or behavior of the component.
-- Each **interaction or dependency** between components is modeled as a **directed edge**, also categorized into a **limited number of semantic types** such as `calls`, `read_table`, `write_table`, `imported`, etc.
+- Each **interaction or dependency** between components is modeled as a **directed edge**, also categorized into a **limited number of semantic types** such as `calls`, `reads_table`, `writes_table`, `imported`, etc.
 
 > These well-defined node and edge types enable precise reasoning, AI-driven prompt generation, and automated system tracing.
 
