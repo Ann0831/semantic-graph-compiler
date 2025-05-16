@@ -65,5 +65,8 @@ You can try the compiler on your own machine by cloning the repository and using
   Open `graphToDocument.html` in your browser (also located in `semantic-graph-workspace-test/`).  
   Upload your `.json` graph file to generate a structured, human-readable documentation of all nodes and their relationships.
 
+## License
+
+This project is licensed under the terms described in [`LICENSE.md`](./LICENSE.md).
 
 
