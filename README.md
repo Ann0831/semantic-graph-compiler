@@ -52,11 +52,13 @@ You can try the compiler on your own machine by cloning the repository and using
 1. **Clone this repository:**
 
   git clone https://github.com/Ann0831/semantic-graph-compiler.git
+  
   cd semantic-graph-compiler
   
 2. **Compile from a graph file:**
    
   cd semantic-graph-workspace-test
+  
   node build.js exampleGraph.json
 
 3.  **To create your own graph file:**
