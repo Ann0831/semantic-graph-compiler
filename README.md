@@ -44,6 +44,26 @@ This flexibility makes it a promising foundation for scalable, AI-assisted softw
 
 ---
 
+##  How to Run
+
+You can try the compiler on your own machine by cloning the repository and using the provided tools:
+
+1. **Clone this repository:**
+
+  git clone https://github.com/Ann0831/semantic-graph-compiler.git
+  cd semantic-graph-compiler
+2. **Compile from a graph file:**
+  cd semantic-graph-workspace-test
+  node build.js exampleGraph.json
+
+3. **To create your own graph file:**
+  Open `editor.html` in your browser (located in `semantic-graph-workspace-test/`).
+4. **To view the compiled prompts for each component:**
+  Open `prompt-viewer.html` in your browser (also located in `semantic-graph-workspace-test/`).  
+  Upload a `.json` graph file to the page — the tool will display the generated prompt for each node in the graph.
+6. **To view a documentation-style summary of your graph:**
+  Open `graphToDocument.html` in your browser (also located in `semantic-graph-workspace-test/`).  
+  Upload your `.json` graph file to generate a structured, human-readable documentation of all nodes and their relationships.
 
 
 
