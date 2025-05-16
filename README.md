@@ -2,6 +2,7 @@
 
 The **Semantic Graph Compiler** is a system that describes and compiles entire software architectures using the mathematical language of **graphs**. 
 To the best of my knowledge, this is the first public compiler that uses a graph-based semantic description to generate complete backend prompts designed for AI to easily understand from component-level relationships and component descriptions. 
+
 *Note: The current implementation focuses on generating backend prompts in Node.js and MySQL. Frontend and multi-language support (e.g., Python) is planned for future versions.*
 
 In this system:
